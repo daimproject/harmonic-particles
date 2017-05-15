@@ -7,6 +7,7 @@
 //#include <thrust/reduce.h>
 //#include <thrust/functional.h>
 #include <boost/numeric/odeint.hpp>
+#include "harmonic_particles.h"
 
 // When compiled with nvcc
 #ifdef __CUDACC__
@@ -28,18 +29,12 @@ const size_t N = 10;
 const value_type dx = 1;
 const value_type dt = 0.01;
 
-state_type new_state_vector( size_t N, size_t i )
-{
-  state_type state_vector( N );
-  thrust::fill(state_vector.begin(), state_vector.end(), i);
-  return state_vector;
-}
 
 int main( int arc , char* argv[] )
 {
   std::cout << "Hello \n";
 
-  state_type x = new_state_vector( 10, 8 );
+  state_type x = State( 10, 8 );
   
   for( size_t i=0; i<N; ++i ){
     std::cout << x[i]; 
