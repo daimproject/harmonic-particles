@@ -13,8 +13,14 @@ void test_create_state_vector() {
     assert(1 == state[2]);
 }
 
+void test_integrate() {
+    integrate();
+}
+
 int main() {
     std::cout << "Tests Begin" << std::endl;
     run_test(test_create_state_vector);
+    run_test(test_integrate);
     return 0;
 }
+
