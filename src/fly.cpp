@@ -2,9 +2,8 @@
 // vim:set ts=2 sts=2 sw=2 expandtab:
 
 #include <iostream>
-
-#include <thrust/device_vector.h>
 #include <boost/program_options.hpp>
+#include <boost/range/combine.hpp>
 #include "harmonic_particles.h"
 
 namespace po = boost::program_options;
@@ -17,9 +16,9 @@ void CLEANUP(){ cudaProfilerStop();}
 void CLEANUP(){ }
 #endif
 
-using harmonics_type = std::pair<std::vector<double>,std::vector<double>>;
+using Harmonics = std::vector<std::complex<double>>;
 
-harmonics_type parse_command_line(int argc, char* argv[]){
+Harmonics parse_command_line(int argc, char* argv[]){
   // normal and skew
   std::vector<double> normal;
   std::vector<double> skew;
@@ -36,18 +35,28 @@ harmonics_type parse_command_line(int argc, char* argv[]){
   po::variables_map vars;
   po::store(po::parse_command_line(argc, argv, opt_desc), vars);
   po::notify(vars);
-  return std::make_pair(normal, skew);
+
+  // Pad normal and skew components to the same size
+  auto n_harmonics = std::max(normal.size(), skew.size());
+  normal.resize(n_harmonics, 0);
+  skew.resize(n_harmonics, 0);
+
+  // Combine harmonics to complex vector
+  Harmonics harmonics;
+  for (auto ns : boost::combine(normal, skew)){
+    double n, s;
+    boost::tie(n, s) = ns;
+    harmonics.push_back(std::complex<double>(n, s));
+  }
+  return harmonics;
 }
 
-void print_harmonics(harmonics_type harmonics)
+
+void print_harmonics(Harmonics harmonics)
 {
-  std::cout << "Normal:\n";
-  for(auto x : harmonics.first) {
-    std::cout << "  " << x << "\n";
-  }
-  std::cout << "Skew:\n";
-  for(auto x : harmonics.second) {
-    std::cout << "  " << x << "\n";
+  std::cout << "Harmonics:\n";
+  for(auto x : harmonics) {
+    std::cout << x.real() << "\t" << x.imag() << std::endl;
   }
 }
 

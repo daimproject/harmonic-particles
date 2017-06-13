@@ -7,20 +7,14 @@
     fn_name();\
     std::cout << " *" << std::endl;
 
-void test_create_state_vector() {
-    State state = new_state(3,1);
-    assert(1 == state[0]);
-    assert(1 == state[2]);
-}
-
-void test_integrate() {
-    integrate();
+void test_circular_field() {
+    Harmonics harmonics {1, 2, 3};
+    auto f = Circular(harmonics, 5 );
 }
 
 int main() {
     std::cout << "Tests Begin" << std::endl;
-    run_test(test_create_state_vector);
-    run_test(test_integrate);
+    run_test(test_circular_field);
     return 0;
 }
 

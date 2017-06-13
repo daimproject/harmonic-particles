@@ -1,30 +1,12 @@
 #include "harmonic_particles.h"
-#include <iostream>
-#include <boost/numeric/odeint.hpp>
-#include <boost/numeric/odeint/external/thrust/thrust.hpp>
 
-using namespace boost::numeric;
+Circular::Circular( Harmonics field_harmonics, double reference_radius ) 
+            : harmonics(field_harmonics), ref_radius(reference_radius) {} ;
 
-State new_state( size_t N, int i )
+void Circular::operator() ( const State &x , State &dxdt , const double t )
 {
-  State state(N);
-  thrust::fill(state.begin(), state.end(), i);
-  return state;
-}
+    dxdt[0] = x[1];
+    dxdt[1] = -x[0] - ref_radius*x[1];
+};
 
-void update( const State &x, State &dxdt, double t)
-{
-    thrust::fill(dxdt.begin(), dxdt.end(), 1);
-}
 
-void integrate() 
-{
-    State x = new_state(10, 4);
-    odeint::runge_kutta4<State> stepper;
-
-    double t0 = 0.0;
-    double t1 = 10.0;
-    double dt = 0.1;
-
-    odeint::integrate( update, x, t0, t1, dt );
-}
