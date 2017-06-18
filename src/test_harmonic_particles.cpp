@@ -10,13 +10,12 @@
     std::cout << " *" << std::endl;
 
 void test_circular_field() {
-    auto f = Circular<3>({
-            Complex(2,1),
-            Complex(4,3),
-            Complex(6,5)}, 10 );
-    f.print_harmonics();
-    auto fp = f(Complex(1,2));
-    std::cout << fp.imag() << ", " << fp.real() << std::endl;
+    const double r = 10;
+    Complex mp[] = {Complex(1,2), Complex(3,4), Complex(5,6)};
+    auto harmonics = Circular<3>(mp, r);
+    harmonics.print_harmonics();
+    auto field = harmonics(Complex(1,2));
+    std::cout << field.imag() << ", " << field.real() << std::endl;
 }
 
 int main() {
